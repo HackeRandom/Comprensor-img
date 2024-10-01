@@ -1,0 +1,15 @@
+{
+  "name": "comprensor-img",
+  "version": "1.0.0",
+  "description": "Este es un comprensor de imágenes, el objetivo de este proyecto es reducir el peso de estas imágenes sin que pierdan demasiada calidad.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hacker Random",
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}
