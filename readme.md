@@ -37,7 +37,7 @@ npm install sharp
 1. Clone the repository
 
 ```js
-git clone https://github.com/yourusername/image-compression-tool.git
+git clone https://github.com/HackeRandom/Comprensor-img.git
 cd comprensor img
 ```
 
