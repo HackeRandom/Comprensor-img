@@ -5,11 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node index.js"
   },
   "author": "Hacker Random",
   "license": "MIT",
   "dependencies": {
+    "heic-convert": "^2.1.0",
     "sharp": "^0.33.5"
   }
 }
