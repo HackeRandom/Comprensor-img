@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import heicConvert from 'heic-convert';
 
 // Solución para __dirname en módulos ES
 const __filename = fileURLToPath(import.meta.url);
@@ -14,10 +15,33 @@ const generateUniqueFileName = (fileName) => {
   return `${fileName}_${uniqueId}.webp`;
 };
 
+// Función para convertir HEIC a JPEG antes de procesar
+const convertHeicToJpeg = async (inputPath) => {
+  const data = await fs.promises.readFile(inputPath);
+  const outputBuffer = await heicConvert({
+    buffer: data,
+    format: 'JPEG',
+    quality: 1 // Calidad máxima
+  });
+  const outputPath = path.join(__dirname, 'ImagenesSinComprimir', `${path.basename(inputPath, '.heic')}.jpeg`);
+  await fs.promises.writeFile(outputPath, outputBuffer);
+  return outputPath;
+};
+
 // Función para comprimir una imagen
 const compressImage = async (inputPath, outputPath) => {
   try {
-    await sharp(inputPath)
+    const extension = path.extname(inputPath).toLowerCase();
+
+    let image = sharp(inputPath);
+
+    // Si es HEIC, lo convertimos primero a JPEG
+    if (extension === '.heic') {
+      inputPath = await convertHeicToJpeg(inputPath);
+      image = sharp(inputPath); // Reasignar la imagen al nuevo archivo JPEG
+    }
+
+    await image
       .resize(1024) // Ajusta el tamaño si es necesario
       .webp({ quality: 80 }) // Convierte a WebP con calidad del 80%
       .toFile(outputPath); // Guarda la imagen comprimida
@@ -31,7 +55,7 @@ const compressImage = async (inputPath, outputPath) => {
 const compressAllImagesInFolder = async (inputFolder, outputFolder) => {
   try {
     const files = fs.readdirSync(inputFolder); // Leer todas las imágenes en la carpeta de entrada
-    const imageFiles = files.filter(file => /\.(jpg|jpeg|png)$/i.test(file)); // Filtrar solo imágenes con extensiones válidas
+    const imageFiles = files.filter(file => /\.(jpg|jpeg|png|heic)$/i.test(file)); // Filtrar solo imágenes con extensiones válidas
 
     if (imageFiles.length === 0) {
       console.log('No se encontraron imágenes en la carpeta de entrada.');
